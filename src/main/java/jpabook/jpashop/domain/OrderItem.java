@@ -8,6 +8,7 @@ import javax.persistence.*;
 
 @Entity
 @Getter @Setter
+@Table( name = "order_item")
 public class OrderItem {
 
     @Id @GeneratedValue
