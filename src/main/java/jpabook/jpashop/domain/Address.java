@@ -13,7 +13,7 @@ public class Address {
     private String zipcode;
 
     protected Address() {
-    }
+    }   // 생성자 의미 x 그냥 생성
 
     public Address(String city, String street, String zipcode) {
         this.city = city;
