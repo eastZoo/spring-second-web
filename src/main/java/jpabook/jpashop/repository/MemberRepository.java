@@ -32,7 +32,7 @@ public class MemberRepository {
     }
     //JPQL 사용 SQL이랑 거의 비슷한데 from의 대상이 테이블이아니라 엔티티이다 Member m
 
-    public List<Member> findbyName(String name) {
+    public List<Member> findByName(String name) {
         return em.createQuery("select m from Member m where m.name = :name", Member.class)
                 .setParameter("name", name)
                 .getResultList();

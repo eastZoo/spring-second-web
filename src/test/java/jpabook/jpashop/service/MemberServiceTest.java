@@ -2,6 +2,7 @@ package jpabook.jpashop.service;
 
 import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.repository.MemberRepository;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,6 @@ public class MemberServiceTest {
 
 
     @Test
-    @Rollback(false)
     public void join() throws Exception {
         //given
         Member member = new Member();
@@ -34,19 +34,24 @@ public class MemberServiceTest {
         Long saveId = memberService.join(member);
 
         //then
-        em.flush(); // 변경 등록내용 강제 디비에 반영 후 테스트 끝나면 트랜잭셔널이 인서트 됬던게 롤백!( 로그 볼 수 도있고 롤백도 할 수 있다!)
         assertEquals(member, memberRepository.findOne(saveId));
 
     }
 
-    @Test
-    public void 중복_회원_예외() throws Exception {
+    @Test(expected = IllegalStateException.class)
+    public void Duplicate_Member_Join() throws Exception {
         //given
+        Member member1 = new Member();
+        member1.setName("kim");
+
+        Member member2 = new Member();
+        member2.setName("kim");
 
         //when
-
+        memberService.join(member1);
+        memberService.join(member2);  //예외가 발생해야 한다!!!
         //then
-
+        fail("예외가 발생해야 한다.");
     }
 
 }
