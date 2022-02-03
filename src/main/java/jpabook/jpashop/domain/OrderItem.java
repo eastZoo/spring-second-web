@@ -26,6 +26,10 @@ public class OrderItem {
     private int orderPrice;     //주문 가격
     private int count;          // 주문 수량
 
+    protected OrderItem(){
+
+    }; //쓰지말라는 제약 protected로 감싸줘서 다른사람이 이 이름 못쓰게
+
     //==생성 메서드==//
     public static OrderItem createOrderItem(Item item, int orderPrice, int count) {
         OrderItem orderItem = new OrderItem();
