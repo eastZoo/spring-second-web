@@ -1,5 +1,6 @@
 package jpabook.jpashop.repository;
 
+import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.domain.Order;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -7,7 +8,9 @@ import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.*;
 import javax.swing.text.html.parser.Entity;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -71,5 +74,35 @@ public class OrderRepository {
                 .setMaxResults(1000) //최대 1000건
                 .getResultList();
          **/
+    }
+
+    /**
+     *JPA Criteria
+     * JPQL을 자바코드로 작성할 수 있께 크라이테리어가 도와주는 느낌
+     * 유지보수성이 거의 0, 딱보면 무슨 쿼리가 생성될지 알 수 가없다.
+     * 그냥 이런식으로 할 수 있다 정도 알아둬라 ( JPA 표준 스펙 )
+     */
+    public List<Order> findAllBycriteria(OrderSearch orderSearch) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Order> cq = cb.createQuery(Order.class);
+        Root<Order> o = cq.from(Order.class);
+        Join<Order, Member> m = o.join("member", JoinType.INNER); //회원과 조인
+        List<Predicate> criteria = new ArrayList<>();
+        //주문 상태 검색
+        if (orderSearch.getOrderStatus() != null) {
+            Predicate status = cb.equal(o.get("status"),
+                    orderSearch.getOrderStatus());
+            criteria.add(status);
+        }
+        //회원 이름 검색
+        if (StringUtils.hasText(orderSearch.getMemberName())) {
+            Predicate name =
+                    cb.like(m.<String>get("name"), "%" +
+                            orderSearch.getMemberName() + "%");
+            criteria.add(name);
+        }
+        cq.where(cb.and(criteria.toArray(new Predicate[criteria.size()])));
+        TypedQuery<Order> query = em.createQuery(cq).setMaxResults(1000); //최대
+        return query.getResultList();
     }
 }
