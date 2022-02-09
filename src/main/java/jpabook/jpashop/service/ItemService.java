@@ -22,13 +22,12 @@ public class ItemService {
     }
 
     @Transactional
-    public Item updateItem(Long itemId, Book param) {
+    public void updateItem(Long itemId, String name, int price, int stockQuantity) {
         Item findItem = itemRepository.findOne(itemId);
 //        findItem.change(price, name, stockQuantity);  //메소드만들어서 넘기는게 훨씬 좋은 방법
-        findItem.setPrice(param.getPrice());
-        findItem.setName(param.getName());
-        findItem.setStockQuantity(param.getStockQuantity());
-        return findItem;
+        findItem.setName(name);
+        findItem.setPrice(price);
+        findItem.setStockQuantity(stockQuantity);
     }
 
     public List<Item> findItems() {
